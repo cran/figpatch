@@ -1,0 +1,28 @@
+Package: figpatch
+Title: Easily Arrange External Figures with Patchwork Alongside
+        'ggplot2' Figures
+Version: 0.1.0.1
+Authors@R: 
+    person(given = "Brady",
+           family = "Johnston",
+           role = c("aut", "cre"),
+           email = "brady.johnston@me.com",
+           comment = c(ORCID = "0000-0001-6301-2269"))
+Description: For including external figures into an assembled 
+    {patchwork}. This enables the creation of more complex figures that include 
+    images alongside plots. 
+License: MIT + file LICENSE
+URL: https://github.com/BradyAJohnston/figpatch
+BugReports: https://github.com/BradyAJohnston/figpatch/issues
+Imports: ggplot2, magick, patchwork
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+Suggests: spelling, testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
+NeedsCompilation: no
+Packaged: 2021-07-09 02:01:29 UTC; brady
+Author: Brady Johnston [aut, cre] (<https://orcid.org/0000-0001-6301-2269>)
+Maintainer: Brady Johnston <brady.johnston@me.com>
+Repository: CRAN
+Date/Publication: 2021-07-09 08:40:02 UTC
