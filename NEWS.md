@@ -1,6 +1,15 @@
+# figpatch 0.2
+
+* Added `fig_scale()` to rescale multiple figs that are differently sized.
+
+# figpatch 0.1.1
+
+* fixed problem with `.png` showing gray border (was not previously removing all
+ `panel.background` parts of the `theme` elements)
+
 # figpatch 0.1.0.1
+
 * downres fig.png and delete old unused manual files to reduce the install size
-*
 
 # figpatch 0.1.0
 

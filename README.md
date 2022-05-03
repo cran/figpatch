@@ -7,8 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![Codecov test
-coverage](https://codecov.io/gh/BradyAJohnston/figpatch/branch/master/graph/badge.svg)](https://codecov.io/gh/BradyAJohnston/figpatch?branch=master)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/figpatch)](https://CRAN.R-project.org/package=figpatch)
 <!-- badges: end -->
 
 The goal of figpatch is to create an easy way to incorporate external
@@ -17,10 +17,12 @@ figures and images into figures assembled with
 
 ## Installation
 
-<!-- You can install the released version of figpatch from [CRAN](https://CRAN.R-project.org) with: -->
-<!-- ``` r -->
-<!-- install.packages("figpatch") -->
-<!-- ``` -->
+You can install the released version of figpatch from
+[CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("figpatch")
+```
 
 Install the development version from [GitHub](https://github.com/) with:
 
@@ -54,11 +56,10 @@ plt <- ggplot(mtcars) +
   aes(mpg, cyl) + 
   geom_point()
 
-pat <- patchwork::wrap_plots(img, plt, plt, img)
-pat
+wrap_plots(img, plt, plt, img)
 ```
 
-<img src="man/figures/README-figpatch-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-figpatch-1.png" width="90%" style="display: block; margin: auto;" />
 
 The `aspect.ratio` of the figs is set to the dimensions of the image,
 but the plots can still resize as you would expect. For each plot that
@@ -70,19 +71,19 @@ resize to fill up the total image space (as below).
 wrap_plots(plt, img, plt, img, ncol = 2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" />
 
 If for some reason you want your fig to also resize (and thus distort
 your image) then you can specify a particular `aspect.ratio` or let it
 *be free!*
 
 ``` r
-free_fig <- fig("inst/extdata/fig.png", aspect.ratio = "free")
+free_fig <- fig(image_path, aspect.ratio = "free")
 
 wrap_plots(free_fig, plt, ncol = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
 
 *Elegant.*
 
@@ -92,10 +93,11 @@ Patchwork already provides support for easy tagging of sub-plots and
 sub-figures using `plot_annotation()`.
 
 ``` r
-pat + plot_annotation(tag_levels = "A")
+wrap_plots(img, plt, plt, img) + 
+  plot_annotation(tag_levels = "A")
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" />
 
 For a lot of figures that include images, tags should be placed on top
 of the images themselves. Tagging in {patchwork} currently utilises the
@@ -115,7 +117,55 @@ knitr::opts_chunk$set(fig.height = 2, fig.width = 7)
 patchwork::wrap_plots(img, img, img, nrow = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="90%" style="display: block; margin: auto;" />
+
+### Scaling the Figs
+
+If multiple figs have differing dimensions, but but should be scaled the
+same, you can use `fig_scale()` to scale them all to the maximum width
+and height of all of the included figs.
+
+#### Without scaling
+
+``` r
+fl <- image_path <- system.file("extdata",
+                                package = "figpatch",
+                                mustWork = TRUE) %>%
+  list.files(pattern = "png",
+             full.names = TRUE)
+
+fl %>% 
+  lapply(fig) %>% 
+  fig_wrap(ncol = 3)
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="90%" style="display: block; margin: auto;" />
+
+#### With Scaling
+
+``` r
+fl %>% 
+  lapply(fig) %>% 
+  fig_scale() %>% 
+  fig_wrap(ncol = 3)
+```
+
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" />
+
+The scaling is based on the number of pixels, so while the two chemical
+structures are now properly scaled, the fig has been reduced
+significantly.
+
+We can scale them independently to keep the third fig bigger.
+
+``` r
+scaled_strctures <- lapply(fl[1:2], fig) %>% 
+  fig_scale()
+
+fig_wrap(c(scaled_strctures, list(fig(fl[3]))))
+```
+
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
 
 ### {patchwork} tagging the figs
 
@@ -124,7 +174,7 @@ patchwork::wrap_plots(img, img, img, nrow = 1) +
   plot_annotation(tag_levels = "A")
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" />
 
 ### {figpatch} tagging the figs
 
@@ -139,7 +189,7 @@ img3 <- fig_tag(img, "misc")
 patchwork::wrap_plots(img1, img2, img3, nrow = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" />
 
 A number of default positions can be supplied to `fig_tag(pos = ...)` or
 a custom vector which will place the text in `npc` coordinates (0 to 1
@@ -154,7 +204,7 @@ img3 <- fig_tag(img, "misc", pos = c(0.4, 0.9))
 wrap_plots(img1, img2, img3, nrow = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" />
 
 ## `fig_wrap()`
 
@@ -173,7 +223,7 @@ fig_wrap(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" />
 
 Assembling lots of figures.
 
@@ -194,7 +244,7 @@ fig_wrap(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" />
 
 Adjust the padding around plots with `b_margins` and change the unit
 used with `b_unit`.
@@ -211,7 +261,7 @@ fig_wrap(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-13-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" />
 
 ## Adding specific sub-plot text
 
@@ -233,4 +283,4 @@ design <- "AB
 wrap_plots(img1, img2, img3, design = design)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="500px" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" />
